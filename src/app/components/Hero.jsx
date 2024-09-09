@@ -22,12 +22,13 @@ const Hero = () => {
           {/* Right Side Image */}
           <Grid item xs={12} md={6}>
             <img
-              src="/team-work.jpg"
+              src="/team_work1.avif"
               alt="Team work"
               style={{ borderRadius: "16px", width: "100%" }}
             />
           </Grid>
         </Grid>
+        
 
         {/* Search Bar */}
         <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
