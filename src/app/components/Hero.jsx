@@ -22,7 +22,7 @@ const Hero = () => {
           {/* Right Side Image */}
           <Grid item xs={12} md={6}>
             <img
-              src="/team_work1.avif"
+              src="/student_study.avif"
               alt="Team work"
               style={{ borderRadius: "16px", width: "100%" }}
             />

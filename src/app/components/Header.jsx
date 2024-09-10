@@ -10,21 +10,20 @@ import {
   List,
   ListItem,
   ListItemText,
-  Collapse,
-  Menu,
-  MenuItem,
+  Backdrop,
 } from "@mui/material";
-import {
-  ExpandLess as ExpandLessIcon,
-  ExpandMore as ExpandMoreIcon,
-  Menu as MenuIcon,
-} from "@mui/icons-material";
-import React, { useState } from "react";
+import { Menu as MenuIcon } from "@mui/icons-material";
+import React, { Suspense, useState } from "react";
+import SignUp from "./SignUp";
+import Login from "./Login";
 
-export default function Home() {
+const Home = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [homeOpen, setHomeOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null); // For desktop dropdown
+  const [isLogin, setIsLogin] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
+
+  const openLogin = () => setIsLogin((prev) => !prev);
+  const openSignUp = () => setIsSignUp((prev) => !prev);
 
   // Toggles the Drawer open/close
   const toggleDrawer = (open) => (event) => {
@@ -37,132 +36,145 @@ export default function Home() {
     setDrawerOpen(open);
   };
 
-  // Toggles the Home dropdown in mobile
-  const handleHomeClick = (event) => {
-    event.stopPropagation();
-    setHomeOpen(!homeOpen);
-  };
-
-  // Opens Home dropdown menu in desktop
-  const handleDesktopHomeClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  // Closes the Home dropdown menu in desktop
-  const handleDesktopMenuClose = () => {
-    setAnchorEl(null);
+  // Custom styling for the desktop menu links
+  const linkStyles = {
+    textDecoration: "none",
+    color: "#000",
+    fontWeight: 500,
+    margin: "0 10px",
+    "&:hover": {
+      color: "#0B2F9F",
+    },
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#fff", color: "#000" }}>
-      <Toolbar sx={{ justifyContent: "space-between" }}>
-        {/* Logo/Brand Name */}
-        <Typography
-          variant="h5"
-          component="div"
-          sx={{ fontWeight: 600, color: "#16325B" }}
-        >
-          Studie2Jobb
-        </Typography>
-
-        {/* Mobile Hamburger Menu */}
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ display: { xs: "block", md: "none" } }}
-          onClick={toggleDrawer(true)}
-        >
-          <MenuIcon />
-        </IconButton>
-
-        {/* Centered Menu for Desktop */}
-        <Box
-          sx={{
-            display: { xs: "none", md: "flex" },
-            flexGrow: 1,
-            justifyContent: "center",
-          }}
-        >
-          <Button onClick={handleDesktopHomeClick} color="black">Home</Button>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleDesktopMenuClose}
+    <>
+      <AppBar position="static" sx={{ backgroundColor: "#fff", color: "#000" }}>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          {/* Logo/Brand Name */}
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{ fontWeight: 600, color: "#16325B" }}
           >
-            <MenuItem onClick={handleDesktopMenuClose}>Home 1</MenuItem>
-            <MenuItem onClick={handleDesktopMenuClose}>Home 2</MenuItem>
-          </Menu>
-          <Button color="black">Find a Job</Button>
-          <Button color="black">Recruiters</Button>
-          <Button color="black">Candidates</Button>
-          <Button color="black">Pages</Button>
-          <Button color="black">Blog</Button>
-          <Button color="black">Contact</Button>
-        </Box>
+            Studie2Jobb
+          </Typography>
 
-        {/* Register and Sign In Buttons */}
-        <Box sx={{ display: { xs: "none", md: "flex" } }}>
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: "#424242", marginRight: 1 }}
+          {/* Mobile Hamburger Menu */}
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ display: { xs: "block", md: "none" } }}
+            onClick={toggleDrawer(true)}
           >
-            Register
-          </Button>
-          <Button variant="contained" sx={{ backgroundColor: "#0B2F9F" }}>
-            Sign In
-          </Button>
-        </Box>
-      </Toolbar>
+            <MenuIcon />
+          </IconButton>
+
+          {/* Centered Menu for Desktop */}
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              flexGrow: 1,
+              justifyContent: "center",
+            }}
+          >
+            <Button href="/" sx={linkStyles}>
+              Home
+            </Button>
+            <Button href="/job" sx={linkStyles}>
+              Find a Job
+            </Button>
+            <Button href="/recruiter" sx={linkStyles}>
+              Recruiters
+            </Button>
+            <Button href="/candidate" sx={linkStyles}>
+              Candidates
+            </Button>
+            <Button href="/blog" sx={linkStyles}>
+              Blog
+            </Button>
+            <Button href="/contact" sx={linkStyles}>
+              Contact
+            </Button>
+          </Box>
+
+          {/* Register and Sign In Buttons */}
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: "#424242", marginRight: 1 }}
+              onClick={openSignUp}
+            >
+              SignUp
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: "#0B2F9F", marginRight: 1 }}
+              onClick={openLogin}
+            >
+              Login
+            </Button>
+          </Box>
+        </Toolbar>
+      </AppBar>
 
       {/* Drawer for Mobile Menu */}
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
         <Box sx={{ width: 250 }} role="presentation">
           <List>
-            {/* Home Dropdown in Drawer */}
-            <ListItem button onClick={handleHomeClick}>
-              <ListItemText primary="Home" />
-              {homeOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            </ListItem>
-            <Collapse in={homeOpen} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <DropDownItem />
-              </List>
-            </Collapse>
-
             {[
-              "Find a Job",
-              "Recruiters",
-              "Candidates",
-              "Pages",
-              "Blog",
-              "Contact",
-            ].map((text) => (
-              <ListItem button key={text} onClick={toggleDrawer(false)}>
-                <ListItemText primary={text} />
+              { text: "Home", href: "/" },
+              { text: "Find a Job", href: "/job" },
+              { text: "Recruiters", href: "/recruiter" },
+              { text: "Candidates", href: "/candidate" },
+              { text: "Blog", href: "/blog" },
+              { text: "Contact", href: "/contact" },
+            ].map((item) => (
+              <ListItem
+                button
+                key={item.text}
+                component="a"
+                href={item.href}
+                onClick={toggleDrawer(false)}
+              >
+                <ListItemText primary={item.text} />
               </ListItem>
             ))}
-            <ListItem button onClick={toggleDrawer(false)}>
+            <ListItem
+              button
+              onClick={() => {
+                toggleDrawer(false);
+                openSignUp();
+              }}
+            >
               <ListItemText primary="Register" />
             </ListItem>
-            <ListItem button onClick={toggleDrawer(false)}>
+            <ListItem
+              button
+              onClick={() => {
+                toggleDrawer(false);
+                openLogin();
+              }}
+            >
               <ListItemText primary="Sign In" />
             </ListItem>
           </List>
         </Box>
       </Drawer>
-    </AppBar>
-  );
-}
 
-// DropDown items for Home
-const DropDownItem = () => (
-  <>
-    <ListItem button sx={{ pl: 4 }}>
-      <ListItemText primary="Home 1" />
-    </ListItem>
-    <ListItem button sx={{ pl: 4 }}>
-      <ListItemText primary="Home 2" />
-    </ListItem>
-  </>
-);
+      {isLogin && (
+        <Suspense fallback={<Backdrop open />}>
+          <Login isLogin={isLogin} />
+        </Suspense>
+      )}
+      {isSignUp && (
+        <Suspense fallback={<Backdrop open />}>
+          <SignUp isSignUp={isSignUp} />
+        </Suspense>
+      )}
+    </>
+  );
+};
+
+export default Home;
